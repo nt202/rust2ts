@@ -3,14 +3,22 @@ use rust2ts::{rust2ts, rust2ts_module};
 
 #[rust2ts_module]
 pub mod chess {
+    // Структуры
     #[rust2ts]
-    #[derive(Clone, Copy)]
     pub struct Board {
-        // 0 = пусто, 1-6 = белые фигуры, -1..-6 = черные фигуры
         squares: [[i32; 8]; 8],
-        turn: i32, // 0 = белые, 1 = черные
+        turn: i32,
     }
     
+    #[rust2ts]
+    pub struct Move {
+        from_x: i32,
+        from_y: i32,
+        to_x: i32,
+        to_y: i32,
+    }
+    
+    // Константы
     #[rust2ts]
     pub const PIECE_PAWN: i32 = 1;
     #[rust2ts]
@@ -24,6 +32,7 @@ pub mod chess {
     #[rust2ts]
     pub const PIECE_KING: i32 = 6;
     
+    // Функции
     #[rust2ts]
     pub fn evaluate_material(board: Board) -> i32 {
         let mut score = 0;
@@ -38,7 +47,34 @@ pub mod chess {
         score
     }
     
-    // Эта функция не экспортируется (нет #[rust2ts])
+    #[rust2ts]
+    pub fn make_move(board: Board, mv: Move) -> Board {
+        let mut new_board = board;
+        let piece = board.squares[mv.from_x as usize][mv.from_y as usize];
+        new_board.squares[mv.from_x as usize][mv.from_y as usize] = 0;
+        new_board.squares[mv.to_x as usize][mv.to_y as usize] = piece;
+        new_board.turn = 1 - board.turn;
+        new_board
+    }
+    
+    #[rust2ts]
+    pub fn initial_board() -> Board {
+        Board {
+            squares: [
+                [-4, -2, -3, -5, -6, -3, -2, -4],
+                [-1, -1, -1, -1, -1, -1, -1, -1],
+                [0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0, 0],
+                [1, 1, 1, 1, 1, 1, 1, 1],
+                [4, 2, 3, 5, 6, 3, 2, 4],
+            ],
+            turn: 0,
+        }
+    }
+    
+    // Вспомогательная функция - не экспортируется
     fn piece_value(piece: i32) -> i32 {
         match piece.abs() {
             PIECE_PAWN => 1,
