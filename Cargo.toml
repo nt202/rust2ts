@@ -2,5 +2,23 @@
 name = "rust2ts"
 version = "0.1.0"
 edition = "2024"
+description = "Convert Rust to TypeScript/JavaScript with zero boilerplate"
+repository = "https://github.com/nt202/rust2ts"
+license = "MIT"
+keywords = ["rust", "typescript", "javascript", "transpiler"]
+categories = ["web-programming"]
+
+[lib]
+proc-macro = true
 
 [dependencies]
+syn = { version = "2.0", features = ["full", "extra-traits"] }
+quote = "1.0"
+proc-macro2 = "1.0"
+
+[dev-dependencies]
+trybuild = "1.0"
+
+[features]
+default = []
+generate = []  # Включает генерацию TypeScript/JS файлов
